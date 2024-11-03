@@ -16,7 +16,7 @@ env = json.load(open("env.json"))
 
 origins = [
     
-    env["ngrukUrl"],
+    env["ngrokUrl"],
     "https://script.google.com"
 ]
 app.add_middleware(
