@@ -227,15 +227,6 @@ async def full_text_endpoint(file: UploadFile = File(...)):
         response.headers["Access-Control-Allow-Origin"] = "*"
         return response
 
-@app.post("/uploadtest/")
-async def test_upload(file: UploadFile = File(...)):
-    response = JSONResponse(content={"filename": file.filename})
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    return response
-
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
 
 def start_ngrok(port):
     http_tunnel = pyngrok.ngrok.connect(port, "http", hostname="boss-squirrel-instantly.ngrok-free.app")
