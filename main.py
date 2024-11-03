@@ -117,31 +117,6 @@ Para cada chave, siga as instruções específicas:
 
 """
 
-"""
-def split_pdf(file_name: str, size_of_split:int=4000) -> list:
-    pdf = pdfplumber.open(file_name)
-    complete_text = ""
-    
-    for page in pdf.pages:
-        complete_text += page.extract_text()
-    
-    # Divida o texto em partes de até size_of_split, garantindo que palavras não sejam cortadas
-    split_text = []
-    while len(complete_text) > size_of_split:
-        # Encontre o último espaço antes do limite de size_of_split
-        split_point = complete_text.rfind(' ', 0, size_of_split)
-        if split_point == -1:
-            split_point = size_of_split  # Se não houver espaço, divida no limite
-        split_text.append(complete_text[:split_point])
-        complete_text = complete_text[split_point:].lstrip()  # Remova espaços em branco à esquerda
-    
-    # Adicione o texto restante
-    if complete_text:
-        split_text.append(complete_text)
-    
-    return split_text
-"""
-
 def split_pdf(file: UploadFile, size_of_split: int = 4000) -> list:
     pdf = pdfplumber.open(file.file)
     complete_text = ""
