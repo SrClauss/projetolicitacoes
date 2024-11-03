@@ -5,7 +5,6 @@ from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse  
 import pyngrok
-from pydantic import BaseModel
 import pyngrok.ngrok
 import uvicorn
 import pyperclip
@@ -27,6 +26,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    
 )
 KEY = env["openAiKey"]
 client = openai.OpenAI(api_key=KEY)
