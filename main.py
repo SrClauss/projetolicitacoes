@@ -1,13 +1,13 @@
 import openai
 import json
-import pdfplumber
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse  
 import pyngrok
 import pyngrok.ngrok
 import uvicorn
-import pyperclip
+import fitz
+
 
 
 
@@ -118,14 +118,15 @@ Para cada chave, siga as instruções específicas:
 """
 
 def split_pdf(file: UploadFile, size_of_split: int = 4000) -> list:
-    pdf = pdfplumber.open(file.file)
-    complete_text = ""
     
-    for page in pdf.pages:
-        complete_text += page.extract_text()
-    
-    # Divida o texto em partes de até size_of_split, garantindo que palavras não sejam cortadas
+    with fitz.open(file.file) as pdf:
+        complete_text = ""
+        page_count = pdf.page_count
+        for page in pdf:
+            print(f"Extraindo {page.number} de {page_count} páginas", end="\r")
+            complete_text += page.get_text()
     split_text = []
+    print(f"Dividindo o texto em partes de até {size_of_split} caracteres")
     while len(complete_text) > size_of_split:
         # Encontre o último espaço antes do limite de size_of_split
         split_point = complete_text.rfind(' ', 0, size_of_split)
@@ -137,9 +138,8 @@ def split_pdf(file: UploadFile, size_of_split: int = 4000) -> list:
     # Adicione o texto restante
     if complete_text:
         split_text.append(complete_text)
-    
     return split_text
-
+    
 def add_messages(messages: list, message: str) -> list[dict[str, str]]:
     
     if messages.__len__() == 0:
@@ -175,7 +175,7 @@ def ask(list_answers: list[str]) -> dict[str, str]:
     for answer in list_answers:
         messages = add_messages(messages, answer)
    
-    
+    print()
     response = client.chat.completions.create(       
         model="gpt-4o-mini",
         messages=messages,
@@ -206,13 +206,13 @@ async def full_text_endpoint(file: UploadFile = File(...)):
 def start_ngrok(port):
     http_tunnel = pyngrok.ngrok.connect(port, "http", hostname=env["ngrokUrl"].split("//")[1])
     print("URL do túnel:", http_tunnel.public_url)
-    pyperclip.copy(http_tunnel.public_url)
+
     return http_tunnel
 
 
 
 if __name__ == "__main__":
-
+    
     port = 8000  # Porta onde o FastAPI irá rodar
     tunnel = start_ngrok(port)
     try:
@@ -220,5 +220,5 @@ if __name__ == "__main__":
         uvicorn.run(app, host="0.0.0.0", port=port)
     finally:
         pyngrok.ngrok.disconnect(tunnel.public_url)
-
-  
+   
+ 

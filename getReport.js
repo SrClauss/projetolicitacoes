@@ -1,6 +1,6 @@
 function getReport() {
   const aDisputar = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("A Disputar 2.0");
-  const line = 281;
+  const line = SpreadsheetApp.getActiveRange().getRow()
   const fileId = aDisputar.getRange(line, 9).getValue().split("/d/")[1].split("/")[0];
   const fileBlob = DriveApp.getFileById(fileId).getBlob();
 
@@ -19,7 +19,7 @@ function getReport() {
   const response = UrlFetchApp.fetch("https://boss-squirrel-instantly.ngrok-free.app/uploadfile", options);
   const json = JSON.parse(response.getContentText());
 
-
+  console.log(json)
   const docId = "1FZaVot_I__lLkIa-JIBd2-5LxIizTDA7Xev5X2DWERo"; // ID do documento modelo
   const folderId = "1T4Su32nq_PsTQdopywpyuy3ywqdMUdGI"; // ID da pasta 'Relatorios'
 
@@ -33,7 +33,22 @@ function getReport() {
 
   // Substituir os marcadores no novo documento
   Object.keys(json).forEach(key => {
-    newDoc.getBody().replaceText("\\[" + key + "\\]", json[key]); // Escapar colchetes
+
+    if (key == "site_de_disputa"){
+
+      const arraySites = json[key];// Array de sites de disputa
+      let sites = "";
+      arraySites.forEach(site => {
+        sites += site["finalidade"] + ": " + site["url"] + "\n";
+      });
+      newDoc.getBody().replaceText("\\[" + key + "\\]", sites); // Escapar colchetes
+      
+
+    }
+    else{
+
+      newDoc.getBody().replaceText("\\[" + key + "\\]", json[key]); // Escapar colchetes
+    }
   });
 
   newDoc.saveAndClose(); // Garantir que o documento seja salvo
@@ -43,4 +58,3 @@ function getReport() {
   destinyCell.setValue(newDoc.getUrl())
 
 }
-
