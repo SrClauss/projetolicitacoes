@@ -210,9 +210,7 @@ def ask(list_answers: list[str]) -> dict[str, str]:
    
     return extract_json_from_response(response)
  
- 
-class FullText(BaseModel):
-    full_text: str 
+
 @app.post("/uploadfile/")
 async def full_text_endpoint(file: UploadFile = File(...)):
     if file.content_type != "application/pdf":
