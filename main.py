@@ -204,7 +204,7 @@ async def full_text_endpoint(file: UploadFile = File(...)):
 
 
 def start_ngrok(port):
-    http_tunnel = pyngrok.ngrok.connect(port, "http", hostname="boss-squirrel-instantly.ngrok-free.app")
+    http_tunnel = pyngrok.ngrok.connect(port, "http", hostname=env["ngrokUrl"].split("//")[1])
     print("URL do túnel:", http_tunnel.public_url)
     pyperclip.copy(http_tunnel.public_url)
     return http_tunnel

@@ -25,12 +25,13 @@ Certifique-se de ter o Python 3.7 ou superior instalado.
 Crie um ambiente virtual (venv) e ative-o.
 Instale as dependências listadas no arquivo requirements.txt.
 Crie um arquivo env.json e preencha com sua chave de API do OpenAI e a URL do ngrok.
-    
+
 ```
 //env.json    
 {
     "ngrokUrl": "<url_ngrok>"",
-    "openAiKey": "<open_ai_api_key>"
+    "openAiKey": "<open_ai_api_key>",
+    "hostName": "<your_host_name>
 }
 ``` 
     
