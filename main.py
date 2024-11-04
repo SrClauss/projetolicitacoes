@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 import pyngrok
 import pyngrok.ngrok
 import uvicorn
-import fitz
+import pymupdf
 
 
 
@@ -119,11 +119,11 @@ Para cada chave, siga as instruções específicas:
 
 def split_pdf(file: UploadFile, size_of_split: int = 4000) -> list:
     
-    with fitz.open(file.file) as pdf:
+    with pymupdf.open(file.file) as pdf:
         complete_text = ""
         page_count = pdf.page_count
         for page in pdf:
-            print(f"Extraindo {page.number} de {page_count} páginas", end="\r")
+            print(f"Extraindo {page.number} de {page_count} páginas")
             complete_text += page.get_text()
     split_text = []
     print(f"Dividindo o texto em partes de até {size_of_split} caracteres")
@@ -221,4 +221,4 @@ if __name__ == "__main__":
     finally:
         pyngrok.ngrok.disconnect(tunnel.public_url)
    
- 
+  
